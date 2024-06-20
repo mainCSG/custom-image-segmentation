@@ -1,0 +1,18 @@
+info:
+    name: bias triangle
+    # Need to specify class dictionary for custom datasets,
+    # 'nd' -> 'no dot'
+    # 'ld' -> 'left dot'
+    # 'cd' -> 'central dot'
+    # 'rd' -> 'right dot'
+    # 'dd' -> 'double dot'
+    # Dictionary keys MUST match your annotations.json labels
+    # Dictionary values can be anything as long as they are unique 
+    classes: {"unblocked": 0, "blocked": 1}
+
+hyperparameters:
+
+    learning_rate: 2.0e-4
+    num_epochs: 7000
+    batch_num: 10
+    batch_size_per_img: 128

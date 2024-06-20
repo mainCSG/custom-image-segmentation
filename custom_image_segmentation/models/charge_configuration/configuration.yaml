@@ -1,0 +1,27 @@
+info:
+    name: charge configuration
+    # Need to specify class dictionary for custom datasets,
+    # '(0,0)' -> Zero charges in both dots
+    # '(1,0)' -> One charge in left and zero in right dot
+    # etc
+    # Dictionary keys MUST match your annotations.json labels
+    # Dictionary values can be anything as long as they are unique
+    #   -> Use base 3 binary to map charge state to unique number
+    classes: {
+        "(0,0)": 0,
+        "(0,1)": 1,
+        "(0,2)": 2,
+        "(1,0)": 3,
+        "(1,1)": 4,
+        "(1,2)": 5,
+        "(2,0)": 6,
+        "(2,1)": 7,
+        "(2,2)": 8
+    }
+
+hyperparameters:
+
+    learning_rate: 2.0e-4
+    num_epochs: 7000
+    batch_num: 10
+    batch_size_per_img: 128

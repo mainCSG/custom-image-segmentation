@@ -1,0 +1,7 @@
+# Don't upload any large datasets
+data*
+
+# Remove MacOS artifacts
+*DS_Store*
+*__MACOSX*
+*pycache*
