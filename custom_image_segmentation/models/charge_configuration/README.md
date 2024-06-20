@@ -33,3 +33,8 @@ Annotate `train` and `val` datasets,
 ```python
 python src/annotate.py
 ```
+
+### Example Training Data
+
+![Alt text](photos/example_training_data.svg)
+

@@ -39,4 +39,7 @@ Annotate `train` and `val` datasets,
 python src/annotate.py
 ```
 
-## Model Example
+### Example Training Data
+
+![Alt text](photos/example_training_data.svg)
+
