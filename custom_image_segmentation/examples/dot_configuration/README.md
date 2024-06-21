@@ -41,5 +41,18 @@ python src/annotate.py
 
 ### Example Training Data
 
+Here is some example training data with their respective annotations.
+
 ![Alt text](photos/example_training_data.svg)
 
+### Inferencing a trained model
+
+We can inference a random image in our validation dataset to see how the model compares,
+
+![Alt text](photos/simulated_annotations.svg)
+
+![Alt text](photos/simulated_predictions.svg)
+
+Furthermore, it can be inferenced on a test image,
+
+![Alt text](photos/experimental_predictions.svg)

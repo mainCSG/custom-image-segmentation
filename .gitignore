@@ -1,6 +1,9 @@
 # Don't upload any large datasets
 data*
 
+# Don't upload any trained models 
+*.pth
+
 # Remove MacOS artifacts
 *DS_Store*
 *__MACOSX*
