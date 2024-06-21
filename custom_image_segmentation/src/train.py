@@ -1,9 +1,9 @@
 # Import modules 
 
 import argparse, os, json
-
-import sys
+from pathlib import Path
 import torch, detectron2
+
 
 TORCH_VERSION = ".".join(torch.__version__.split(".")[:2])
 CUDA_VERSION = torch.__version__.split("+")[-1]
@@ -21,9 +21,10 @@ import os, json, yaml
 # import some common detectron2 utilities
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
-from detectron2.data import MetadataCatalog, DatasetCatalog
+from detectron2.data import MetadataCatalog, DatasetCatalog, DatasetMapper, build_detection_train_loader
 from detectron2.engine import DefaultTrainer
 from detectron2.structures import BoxMode
+from detectron2.data import transforms as T
 
 def parse_configuration_file(config_file: str) -> tuple:
 
@@ -78,7 +79,22 @@ def construct_dataset_dict(dataset_dir: str, class_dict: dict) -> dict:
         dataset_dicts.append(record)
 
     return dataset_dicts
-    
+
+class AffineAugsTrainer(DefaultTrainer):
+
+    @classmethod
+    def build_train_loader(cls, cfg):
+        augs = T.AugmentationList([
+            T.RandomRotation(angle=[0, 180], expand=False),
+            T.RandomBrightness(0.5, 2),
+            T.RandomContrast(0.5, 2),
+            T.RandomSaturation(0.5, 2),
+            T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
+            T.RandomFlip(prob=0.5, horizontal=False, vertical=True),
+        ])
+        mapper = DatasetMapper(cfg, is_train=True, augmentations=augs.augs)
+        return build_detection_train_loader(cfg, mapper=mapper)
+
 def main(args):
     print("Configuration File:", args.config)
     print("Output Directory:", args.output_dir)
@@ -91,12 +107,12 @@ def main(args):
     MetadataCatalog.clear()
 
     for d in ["train", "val"]:
-        DatasetCatalog.register(info["name"] + "_" + d, lambda d=d: construct_dataset_dict(os.path.join(args.datadir,d)))
-        MetadataCatalog.get(info["name"] + "_" + d).set(thing_classes=list(info["classes"].keys()))
-
+        DatasetCatalog.register(info["name"] + " " + d, lambda d=d: construct_dataset_dict(Path(args.data_dir) / d, info["classes"]))
+        MetadataCatalog.get(info["name"] + " " + d).set(thing_classes=list(info["classes"].keys()))
+        
     cfg = get_cfg()
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-    cfg.DATASETS.TRAIN = (info["name"] + "_" + "train")
+    cfg.DATASETS.TRAIN = (info["name"] + " " + "train")
     cfg.DATASETS.TEST = ()
     cfg.MODEL.DEVICE = args.device 
     cfg.DATALOADER.NUM_WORKERS = 0 if args.device == "cpu" else args.num_workers
@@ -105,10 +121,10 @@ def main(args):
     cfg.SOLVER.MAX_ITER = hyperparameters['num_epochs']
     cfg.SOLVER.STEPS = []        
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = hyperparameters['batch_size_per_img']
-    cfg.MODEL.ROI_HEADS.NUM_CLASSES = hyperparameters['num_of_classes'] 
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(list(info["classes"].keys())) 
 
     os.makedirs(args.output_dir, exist_ok=True)
-    trainer = DefaultTrainer(cfg) 
+    trainer = AffineAugsTrainer(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
 
