@@ -38,11 +38,11 @@ Organize your dataset in the project directory so that it has the following stru
 ```
 
 > Note: You will have to generate the annotations yourself; this can
-be done easily through an online annotation tool such as [VGG Image Annotator](https://www.robots.ox.ac.uk/~vgg/software/via/via.html). 
+be done easily through an online annotation tool such as [VGG Image Annotator](https://www.robots.ox.ac.uk/~vgg/software/via/via.html) and exporting it such that it follows standard formatting.
 
 ### 2. Design your configuration file
 
-In addition to your dataset, you need a configuration file that tells detectron2 how to build and train your Mask-RCNN model.
+In addition to your dataset, you need a configuration file that tells detectron2 how to build and train your Mask-RCNN model. See the example below from [./examples/dot_configuration/configuration.yaml](./custom_image_segmentation/examples/dot_configuration/configuration.yaml).
 
 ```yaml
 info:
@@ -76,13 +76,13 @@ python train.py --config <configuration>.yaml
 
 ### 4. Validate your model
 
-In order to validate your model's performance, you can inference the model on the `data/val` folder.
+In order to validate your model's performance, you can inference the model on the `data/val` folder. It is recommended to first do it interactively using the `src/inference.ipynb` notebook.
 
 ### 5. Test your model
 
-With your model validated, you can inference the model on the `data/test` folder.
+With your model validated, you can inference the model on the `data/test` folder. It is recommended to first do it interactively using the `src/inference.ipynb` notebook.
 
-## Inference Existing Model
+## Inference Trained Model 
 
 ### 1. Prerequisites
 
