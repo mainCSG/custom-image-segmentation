@@ -136,7 +136,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--num_sim_aug", 
         type=int,
-        default=5, 
+        default=50, 
         help="Number of simulated augmentations to perform and save (default: 5)"
     )
     parser.add_argument(

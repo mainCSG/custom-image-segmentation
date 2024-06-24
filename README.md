@@ -1,16 +1,31 @@
-# custom-image-segmentation
+# Custom Image Segmentation
 
-This repository is an open source tool to build and train image segmentation models on custom data with the ability to inference existing models.
+This repository is an open source tool to build and train image segmentation models on *custom* data with the ability to inference existing models!
 
 ## Installation
 
-In order to simplify the usage of this tool, it was designed around [Docker](https://www.google.com/search?client=safari&rls=en&q=docker&ie=UTF-8&oe=UTF-8). Please follow the instructions on their webstie to download Docker on your device.
+Begin by creating a conda environment and activating it,
+```console
+conda create -n <ENV NAME> python=3.10; conda activate <ENV NAME>
+```
+and install all of the requirements,
+```console
+python -m pip install -r /path/to/requirements.txt
+```
 
-Usage of Docker will ensure,
-1. Intended functionality irrespective of OS version (MacOS, Windows, Linux)
-2. All of the packages required will be properly installed inside the Docker container and will not interfere with any local installations
-
-Once Docker is installed please follow the instructions below depending on the use case.
+## Running scripts on a HPC cluster 
+The scripts will work fine provided you have all the installed requirements. For the alliance canada
+HPC cluster, the following commands executed in this order allows for proper environment set-up,
+```console
+virtualenv --no-download ENV; source ENV/bin/activate
+```
+then load up the requirements,
+```console
+module load python/3.10;
+python -m pip install -r requirements.txt;
+module load scipy-stack;
+module spider gcc cuda opencv/4.9.0
+```
 
 ## Training a Custom Model
 
@@ -42,6 +57,41 @@ be done easily through an online annotation tool such as [VGG Image Annotator](h
 
 ![Alt text](./custom_image_segmentation/examples/dot_configuration/photos/vgg_screenshot.jpg)
 
+In the end, each of your `annotations.json` file should look like,
+
+```json
+{
+  "<train0>.jpg": {
+    "filename": "<image0>.jpg",
+    "size": 1234,
+    "regions": [
+      {
+        "shape_attributes": {
+          "name": "polygon",
+          "all_points_x": [
+            119,
+            94,
+            200,
+            200
+          ],
+          "all_points_y": [
+            114,
+            197,
+            199,
+            90
+          ]
+        },
+        "region_attributes": {
+          "label": "<image0: region 1 label>"
+        }
+      },
+      ... more regions ...
+    ],
+  },
+  ... more images ...
+}
+```
+
 ### 2. Design your configuration file
 
 In addition to your dataset, you need a configuration file that tells detectron2 how to build and train your Mask-RCNN model. See the example below from [./examples/dot_configuration/configuration.yaml](./custom_image_segmentation/examples/dot_configuration/configuration.yaml).
@@ -71,7 +121,7 @@ hyperparameters:
 
 To begin training your model on your `data/train` folder, simply execute the following command,
 ```python
-python train.py --config <configuration>.yaml 
+python train.py --config <configuration>.yaml --data_dir <path/to/data>
 ```
 
 > Note: Use `--help` to see all of the flags available to you.
@@ -96,7 +146,7 @@ Before running inference, you need to provide two files along with your image of
 
 3. `<image>.jpg`: This file is the image you wish to inference
 
-### 2. Begin inferencing your image
+### 2. Begin inferencing your image (IN PROGRESS)
 
 To begin training simply execute the following command,
 ```python
