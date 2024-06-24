@@ -173,7 +173,7 @@ def main():
     val_dir = data_dir / "val"
     test_dir = data_dir / "test"
 
-    all_dirs = [train_dir, val_dir, test_dir]
+    all_dirs = [train_dir, val_dir]
 
     for dir in all_dirs:
         annotations = {}

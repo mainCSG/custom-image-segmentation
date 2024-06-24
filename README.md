@@ -38,7 +38,9 @@ Organize your dataset in the project directory so that it has the following stru
 ```
 
 > Note: You will have to generate the annotations yourself; this can
-be done easily through an online annotation tool such as [VGG Image Annotator](https://www.robots.ox.ac.uk/~vgg/software/via/via.html) and exporting it such that it follows standard formatting.
+be done easily through an online annotation tool such as [VGG Image Annotator](https://www.robots.ox.ac.uk/~vgg/software/via/via.html) and exporting it such that it follows standard formatting,
+
+![Alt text](./custom_image_segmentation/examples/dot_configuration/photos/vgg_screenshot.jpg)
 
 ### 2. Design your configuration file
 

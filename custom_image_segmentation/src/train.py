@@ -35,6 +35,15 @@ def parse_configuration_file(config_file: str) -> tuple:
 
     return (info, hyperparameters)
 
+def parse_configuration_file(config_file: str) -> tuple:
+
+    with open(config_file, 'r') as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+            info = config['info']
+            hyperparameters = config['hyperparameters']
+
+    return (info, hyperparameters)
+
 def construct_dataset_dict(dataset_dir: str, class_dict: dict) -> dict:
 
     annotations_file = os.path.join(dataset_dir, "annotations.json")
@@ -53,6 +62,9 @@ def construct_dataset_dict(dataset_dir: str, class_dict: dict) -> dict:
         annotations = image["regions"]
 
         objects = []
+
+        if isinstance(annotations, list): # custom JSONs are in list format need to make them the same
+            annotations = dict(enumerate(annotations))
 
         for _, annotation in annotations.items():
 
