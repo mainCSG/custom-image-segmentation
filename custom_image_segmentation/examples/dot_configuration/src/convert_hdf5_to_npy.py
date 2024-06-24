@@ -41,7 +41,7 @@ def save_as_npy(h5py_file_path: Path, npy_dir: Path) -> None:
 
     fileID = 0
     with h5py.File(h5py_file_path, "r") as f:
-        
+        print(f"Converting {h5py_file_path} to .npy")
         d = [n for n in f.keys()]
         npy_dict = {}
         npy_dict['output'] = {}

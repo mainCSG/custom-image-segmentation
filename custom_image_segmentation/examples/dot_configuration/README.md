@@ -6,7 +6,7 @@ If you wish to recreate this model, follow the steps below to generate the custo
 
 ### 1. Download 
 
-Begin by downloading the required datasets,
+Begin by downloading the required datasets (*at least 30 GB required*),
 ```python
 python src/download.py --version both
 ```

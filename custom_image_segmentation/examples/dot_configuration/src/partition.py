@@ -38,7 +38,7 @@ def randomly_partition(files_list: list[str],
 def main(data_dir: Path, train_ratio: float, val_ratio: float, test_ratio: float) -> None:
     ratio = (train_ratio, val_ratio, test_ratio)
     assert sum(ratio) == 1, "Ratios need to sum to unity."
-    print(f"Splitting data found in {data_dir} to {data_dir.parent}")
+    print(f"Splitting data found in {data_dir} to {data_dir.parent.parent}")
     
     train_dir = data_dir.parent.parent / "train"
     val_dir = data_dir.parent.parent / "val"

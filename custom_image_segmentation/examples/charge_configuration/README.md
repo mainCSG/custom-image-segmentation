@@ -6,7 +6,7 @@ If you wish to recreate this model, follow the steps below to generate the custo
 
 ### 1. Download 
 
-Begin by downloading the required datasets,
+Begin by downloading the required datasets (*at least 15 GB required*),
 ```python
 python src/download.py --version lite
 ```
@@ -38,3 +38,14 @@ python src/annotate.py
 
 ![Alt text](photos/example_training_data.svg)
 
+### Inferencing a trained model
+
+We can inference a random image in our validation dataset to see how the model compares,
+
+![Alt text](photos/simulated_annotations.svg)
+
+![Alt text](photos/simulated_predictions.svg)
+
+Furthermore, it can be inferenced on a test image (experimental data),
+
+![Alt text](photos/experimental_predictions.svg)

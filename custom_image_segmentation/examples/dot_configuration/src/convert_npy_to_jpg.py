@@ -10,9 +10,11 @@ def convert_array_to_image(raw_data: np.ndarray, filepath: str) -> None:
     if not isinstance(raw_data, np.ndarray):
         return
     
-    normalized_raw_data = raw_data / np.amax(raw_data)
+    raw_data_normalized = ((raw_data - raw_data.min()) / (raw_data.max() - raw_data.min()))
+    log_data = np.log1p(raw_data_normalized)
+    # normalized_raw_data = raw_data / np.amax(raw_data)
     image = Image.fromarray(
-        (255 * normalized_raw_data).astype(np.uint8)
+        (255 * log_data).astype(np.uint8)
     )
     image.save(filepath.parent / f"{filepath.stem}.jpg")
 
@@ -61,7 +63,7 @@ def main(data_type: str = None):
     for dir in all_dirs:
         for file in os.listdir(dir):
             if file.endswith(".npy"):
-                print(f"Converting file {file}\n")
+                print(f"Converting {file} to .jpg")
                 raw_data, _, _ = extract_raw_data(npy_filepath = dir / file, data_type=data_type)
                 convert_array_to_image(raw_data, dir / file)
 

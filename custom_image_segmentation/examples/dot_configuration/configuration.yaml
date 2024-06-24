@@ -13,6 +13,6 @@ info:
 hyperparameters:
 
     learning_rate: 2.0e-4
-    num_epochs: 7000
+    num_epochs: 5000
     batch_num: 10
-    batch_size_per_img: 128
+    batch_size_per_img: 32

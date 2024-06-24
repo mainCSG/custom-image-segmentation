@@ -86,9 +86,7 @@ class AffineAugsTrainer(DefaultTrainer):
     def build_train_loader(cls, cfg):
         augs = T.AugmentationList([
             T.RandomRotation(angle=[0, 180], expand=False),
-            T.RandomBrightness(0.5, 2),
-            T.RandomContrast(0.5, 2),
-            T.RandomSaturation(0.5, 2),
+            T.RandomBrightness(1, 2),
             T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
             T.RandomFlip(prob=0.5, horizontal=False, vertical=True),
         ])
@@ -115,26 +113,26 @@ def main(args):
     cfg.DATASETS.TRAIN = (info["name"] + " " + "train")
     cfg.DATASETS.TEST = ()
     cfg.MODEL.DEVICE = args.device 
-    cfg.DATALOADER.NUM_WORKERS = 0 if args.device == "cpu" else args.num_workers
+    cfg.DATALOADER.NUM_WORKERS = 0 if args.device == "cpu" else int(args.num_workers)
     cfg.SOLVER.IMS_PER_BATCH = hyperparameters['batch_num']
     cfg.SOLVER.BASE_LR = hyperparameters['learning_rate']
-    cfg.SOLVER.MAX_ITER = hyperparameters['num_epochs']
+    cfg.SOLVER.MAX_ITER = hyperparameters['num_epochs'] 
     cfg.SOLVER.STEPS = []        
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = hyperparameters['batch_size_per_img']
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(list(info["classes"].keys())) 
 
     os.makedirs(args.output_dir, exist_ok=True)
     trainer = AffineAugsTrainer(cfg)
-    trainer.resume_or_load(resume=False)
+    trainer.resume_or_load(resume=True)
     trainer.train()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Perform inference with Detectron2")
     parser.add_argument("--config", required=True, help="Path to the configuration file")
     parser.add_argument("--output_dir", required=False, help="Path to the output directory", default="output/model.pth")
-    parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu", help="Device to use for training (default: cpu)")
+    parser.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cpu", help="Device to use for training (default: cpu)")
     parser.add_argument("--data_dir", default="./data", help="Directory for custom annotated dataset")
-    parser.add_argument("--num-workers", type=int, default=4, help="(CUDA only) Number of workers to use for data loading")
+    parser.add_argument("--num_workers", type=int, default=4, help="(CUDA only) Number of workers to use for data loading")
 
     args = parser.parse_args()
     main(args)

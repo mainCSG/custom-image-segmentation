@@ -170,24 +170,34 @@ def main():
     val_dir = data_dir / "val"
     test_dir = data_dir / "test"
 
+    custom_annotations_file = data_dir.parent / "custom_annotations" / "charge_configuration_custom_annotations.json"
+    with open(custom_annotations_file) as f:
+        custom_annotations = json.load(f)
+
     all_dirs = [train_dir, val_dir, test_dir]
 
     for dir in all_dirs:
         annotations = {}
         for file in os.listdir(dir):
             if file.endswith(".jpg"):
-                print(f"Processing {dir/file}")
-                npy_file = Path(file).stem + ".npy"
                 try:
-                    raw_data, _, _ = extract_raw_data(dir / npy_file, data_type='charge')
+                    # Check if file has custom annotation, if so use that
+                    annotations[file] = custom_annotations[file]
+                    print(f"Used custom annotations from {custom_annotations_file}!")
+
                 except KeyError:
-                    print(f"Need custom annotations for file {npy_file}!")
-                try:
-                    polygons = get_state_polygons(raw_data)
-                    file_annotation = annotate_polygons(dir / file, polygons)
-                    annotations[file] = file_annotation
-                except AttributeError:
-                    print(f"Need custom annotations for file {npy_file}!")
+                    # Extract annotations manually
+                    npy_file = Path(file).stem + ".npy"
+                    try:
+                        raw_data, _, _ = extract_raw_data(dir / npy_file, data_type='charge')
+                    except KeyError:
+                        print(f"Need custom annotations for file {npy_file}!")
+                    try:
+                        polygons = get_state_polygons(raw_data)
+                        file_annotation = annotate_polygons(dir / file, polygons)
+                        annotations[file] = file_annotation
+                    except AttributeError:
+                        print(f"Need custom annotations for file {npy_file}!")
 
         print(f"Saving annotations for directory {dir}")
         annotations_json_file = dir / "annotations.json"
