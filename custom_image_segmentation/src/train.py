@@ -92,19 +92,6 @@ def construct_dataset_dict(dataset_dir: str, class_dict: dict) -> dict:
 
     return dataset_dicts
 
-class AffineAugsTrainer(DefaultTrainer):
-
-    @classmethod
-    def build_train_loader(cls, cfg):
-        augs = T.AugmentationList([
-            T.RandomRotation(angle=[0, 180], expand=False),
-            T.RandomBrightness(1, 2),
-            T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
-            T.RandomFlip(prob=0.5, horizontal=False, vertical=True),
-        ])
-        mapper = DatasetMapper(cfg, is_train=True, augmentations=augs.augs)
-        return build_detection_train_loader(cfg, mapper=mapper)
-
 def main(args):
     print("Configuration File:", args.config)
     print("Output Directory:", args.output_dir)
@@ -122,7 +109,7 @@ def main(args):
         
     cfg = get_cfg()
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-    cfg.DATASETS.TRAIN = (info["name"] + " " + "train")
+    cfg.DATASETS.TRAIN = (info["name"] + " " + "train",)
     cfg.DATASETS.TEST = ()
     cfg.MODEL.DEVICE = args.device 
     cfg.DATALOADER.NUM_WORKERS = 0 if args.device == "cpu" else int(args.num_workers)
@@ -134,8 +121,8 @@ def main(args):
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(list(info["classes"].keys())) 
 
     os.makedirs(args.output_dir, exist_ok=True)
-    trainer = AffineAugsTrainer(cfg)
-    trainer.resume_or_load(resume=True)
+    trainer = DefaultTrainer(cfg)
+    trainer.resume_or_load(resume=False)
     trainer.train()
 
 if __name__ == "__main__":

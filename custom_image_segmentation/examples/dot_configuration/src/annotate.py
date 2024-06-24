@@ -171,7 +171,6 @@ def main():
 
     train_dir = data_dir / "train"
     val_dir = data_dir / "val"
-    test_dir = data_dir / "test"
 
     all_dirs = [train_dir, val_dir]
 
@@ -179,12 +178,12 @@ def main():
         annotations = {}
         for file in os.listdir(dir):
             if file.endswith(".jpg"):
-                print(f"Annotating {dir/file}")
+                print(f"Annotating {dir/file} ... ")
 
                 try:
                     # Check if file has custom annotation, if so use that
-                    annotations[file] = custom_annotations[file]
-                    print(f"Used custom annotations from {custom_annotations_file}!")
+                    file_annotation = custom_annotations[file]
+                    print(f"Used custom annotations from {custom_annotations_file} for {file}!")
 
                 except KeyError:
                     # Extract annotations manually
@@ -192,13 +191,14 @@ def main():
                     try:
                         raw_data, _, _ = extract_raw_data(dir / npy_file, data_type='state')
                     except KeyError:
-                        print(f"Need custom annotations for file {npy_file}!")
+                        print(f"Can't extract raw data from {npy_file} to build annotations!")
                     try:
                         polygons = get_state_polygons(raw_data)
                         file_annotation = annotate_polygons(dir / file, polygons)
-                        annotations[file] = file_annotation
                     except AttributeError:
-                        print(f"Need custom annotations for file {npy_file}!")
+                        print(f"Can't annotate {npy_file}!")
+
+                annotations[file] = file_annotation
 
         print(f"Saving annotations for directory {dir}")
         annotations_json_file = dir / "annotations.json"

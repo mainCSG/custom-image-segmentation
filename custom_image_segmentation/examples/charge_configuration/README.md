@@ -34,6 +34,15 @@ Annotate `train` and `val` datasets,
 python src/annotate.py
 ```
 
+### *Optional: Augment `data/train` Dataset*
+
+You can optionally augment your created dataset in order to improve training,
+```python
+python src/augment.py --num_exp_aug 5 --num_sim_aug 2
+```
+In the command above, for every experimental image in our dataset (`exp_*.jpg`), it will be augmented 5 times to create (`exp_*_augment[0-4].jpg`) and likewise for the simulated images.
+
+
 ### Example Training Data
 
 ![Alt text](photos/example_training_data.svg)
