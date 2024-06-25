@@ -64,3 +64,5 @@ We can inference a random image in our validation dataset to see how the model c
 Furthermore, it can be inferenced on a test image,
 
 ![Alt text](photos/experimental_predictions.svg)
+
+![Alt text](photos/experimental_predictions2.svg)
