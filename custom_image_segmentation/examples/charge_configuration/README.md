@@ -54,6 +54,8 @@ We can inference a random image in our validation dataset to see how the model c
 
 ![Alt text](photos/simulated_predictions.svg)
 
-Furthermore, it can be inferenced on a test image (experimental data),
+Furthermore, it can be inferenced on an experimental data image taken from the test directory (labels aren't perfect),
 
 ![Alt text](photos/experimental_predictions.svg)
+
+![Alt text](photos/experimental_predictions2.svg)

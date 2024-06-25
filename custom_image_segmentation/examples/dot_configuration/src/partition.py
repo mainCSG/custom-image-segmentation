@@ -4,18 +4,21 @@ import argparse
 import random
 import shutil
 
-def randomly_partition(files_list: list[str],
-                       train_ratio: float, 
-                       val_ratio: float,
-                       data_dir: str,
-                       train_dir: str,
-                       val_dir: str,
-                       test_dir: str) -> None:
-    # Sets the random seed 
-    random.seed(42)
+def partition(files_list: list[str],
+                train_ratio: float, 
+                val_ratio: float,
+                data_dir: str,
+                train_dir: str,
+                val_dir: str,
+                test_dir: str,
+                random: bool = False) -> None:
+    
+    if random:
+        # Sets the random seed 
+        random.seed(42)
 
-    # Shuffle the list of image filenames
-    random.shuffle(files_list)
+        # Shuffle the list of image filenames
+        random.shuffle(files_list)
 
     # determine the number of images for each set
     train_size = int(len(files_list) * train_ratio)
@@ -35,7 +38,7 @@ def randomly_partition(files_list: list[str],
 
         shutil.copy(file_path, trg_path)
 
-def main(data_dir: Path, train_ratio: float, val_ratio: float, test_ratio: float) -> None:
+def main(data_dir: Path, train_ratio: float, val_ratio: float, test_ratio: float, random_partition: bool) -> None:
     ratio = (train_ratio, val_ratio, test_ratio)
     assert sum(ratio) == 1, "Ratios need to sum to unity."
     print(f"Splitting data found in {data_dir} to {data_dir.parent.parent}")
@@ -58,8 +61,26 @@ def main(data_dir: Path, train_ratio: float, val_ratio: float, test_ratio: float
         ]
     
     # First copy experimental files over
-    randomly_partition(experimental_files_list, train_ratio, val_ratio,data_dir, train_dir, val_dir, test_dir)
-    randomly_partition(simulated_files_list, train_ratio, val_ratio, data_dir, train_dir, val_dir, test_dir)
+    partition(
+        experimental_files_list, 
+        train_ratio, 
+        val_ratio, 
+        data_dir, 
+        train_dir, 
+        val_dir,
+        test_dir,
+        random=random_partition
+    )
+    partition(
+        simulated_files_list, 
+        train_ratio, 
+        val_ratio, 
+        data_dir, 
+        train_dir, 
+        val_dir, 
+        test_dir,
+        random=random_partition
+    )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Partition QFlow data")
@@ -81,9 +102,17 @@ if __name__ == '__main__':
         default=0.1, 
         help="Test ratio (default: 0.1)"
     )
+    parser.add_argument(
+        "--random", 
+        choices=["Y", "N", "y", "n"], 
+        default="both", 
+        default="N", 
+        help="Randomly partition the data (default: N)"
+    )
+
     args = parser.parse_args()
 
     # Set data directory
     data_dir = Path("data/tmp/raw")
 
-    main(data_dir, args.train, args.val, args.test)
+    main(data_dir, args.train, args.val, args.test, random_partition=args.random)
