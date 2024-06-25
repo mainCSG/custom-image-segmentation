@@ -179,6 +179,8 @@ def main():
         annotations = {}
         for file in os.listdir(dir):
             if file.endswith(".jpg"):
+                print(f"Annotating {dir/file} ... ")
+
                 try:
                     # Check if file has custom annotation, if so use that
                     file_annotation = custom_annotations[file]
